@@ -27,7 +27,6 @@ for($i=1;$i<=10;$i++){
 
 </head>
     <body>
-        <h4>ORDER CRESCENTE</h4>
         <div class="col-md-6 ">
             <table id='sort' class='table'>
                 <thead>
