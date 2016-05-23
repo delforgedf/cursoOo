@@ -1,14 +1,44 @@
 <?php
 
+require_once 'ClienteInterface.php';
+require_once 'ClienteEspecialInterface.php';
 require_once 'Cliente.php';
+require_once 'pessoaJuridica.php';
+require_once 'pessoaFisica.php';
+
 
 
 for($i=1;$i<=10;$i++){
-    $objeto = new Cliente();
-    $objeto->nome = 'jonatas'.$i;
-    $objeto->cpf = '123456'.$i;
-    $objeto->endereco = 'quadra '.$i;
-    $arrayClientes[$i] = $objeto;
+    //setar o tipo de pesso... pf ou pj
+    if(($i % 2) == 1){
+        $pessoaJuridica = new pessoaJuridica();
+        $pessoaJuridica->setCnpj('12345678945'.$i)
+                       ->setEndereco('endereco'.$i)
+                       ->setImportancia($i)
+                       ->setNome('Jonatas'.$i)
+        ;
+        $arrayClientes[$i]['nome'] = $pessoaJuridica->getNome();
+        $arrayClientes[$i]['endereco'] = $pessoaJuridica->getEndereco();
+        $arrayClientes[$i]['importancia'] = $pessoaJuridica->getImportancia();
+        $arrayClientes[$i]['cpf_cnpj'] = $pessoaJuridica->getCnpj();
+        $arrayClientes[$i]['tipo'] = 'Pessoa Jurídica';
+
+    }else{
+        $pessoaFisica= new pessoaFisica();
+        $pessoaFisica->setCpf('345678945'.$i)
+            ->setEndereco('endereco'.$i)
+            ->setEnderecoEspecial('endereco Especial'.$i)
+            ->setImportancia($i)
+            ->setNome('Jonatas Físico'.$i)
+        ;
+
+        $arrayClientes[$i]['nome'] = $pessoaFisica->getNome();
+        $arrayClientes[$i]['endereco'] = $pessoaFisica->getEndereco();
+        $arrayClientes[$i]['enderecoEsoecial'] = $pessoaFisica->getEnderecoEspecial();
+        $arrayClientes[$i]['importancia'] = $pessoaFisica->getImportancia();
+        $arrayClientes[$i]['cpf_cnpj'] = $pessoaFisica->getCpf();
+        $arrayClientes[$i]['tipo'] = 'Pessoa Física';
+    }
 }
 ?>
 <!doctype html>
@@ -37,19 +67,21 @@ for($i=1;$i<=10;$i++){
                 </tr>
                 </thead>
                 <?php
-                    foreach($arrayClientes as $id=>$objCliente){?>
+                    foreach($arrayClientes as $id=>$dados){?>
                         <tr>
                             <td><?php echo $id;?></td>
-                            <td><?php echo $objCliente->nome; ?></td>
+                            <td><?php echo $dados['nome'] ?></td>
                             <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<?php echo $id?>">Detalhes</button></td>
                         </tr>
                         <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myModal<?php echo $id?>">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <h3>Detalhes do cliente <?php echo $id;?></h3>
-                                    <div> Nome: <?php echo $objCliente->nome?></div>
-                                    <div> CPF: <?php echo $objCliente->cpf?></div>
-                                    <div> Endereço: <?php echo $objCliente->endereco?></div>
+                                    <h3>Detalhes do cliente <?php $dados['nome'];?></h3>
+                                    <div> Nome: <?php echo $dados['nome']?></div>
+                                    <div> CPF: <?php echo $dados['cpf_cnpj']?></div>
+                                    <div> Endereço: <?php echo ($dados['enderecoEsoecial'] == '') ? $dados['endereco'] : $dados['enderecoEsoecial'];?></div>
+                                    <div> Importância: <?php echo$dados['importancia']?></div>
+                                    <div> Tipo de pessoa: <?php echo$dados['tipo']?></div>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +96,6 @@ for($i=1;$i<=10;$i++){
     $(document).ready(function(){
         new Tablesort(document.getElementById('sort'));
     });
-
 </script>
 
 
